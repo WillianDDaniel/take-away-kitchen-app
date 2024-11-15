@@ -24,6 +24,7 @@
         const code = document.getElementById('restaurant_code').value
         localStorage.setItem('restaurant_code', code)
         this.getRestaurantCode()
+        window.location.reload()
       },
       getRestaurantCode() {
         const code = localStorage.getItem('restaurant_code')

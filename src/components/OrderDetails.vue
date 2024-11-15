@@ -1,8 +1,8 @@
 <script>
   import OrderItems from './OrderItems.vue';
   import takeAwayApi from '../services/takeAwayApi'
-  import translateOrderStatus from '../assets/translateOrderStatus'
-  import dateFormatter from '../assets/dateFormatter'
+  import translateOrderStatus from '../assets/js/translateOrderStatus'
+  import dateFormatter from '../assets/js/dateFormatter'
 
   export default {
     name: 'OrderDetails',

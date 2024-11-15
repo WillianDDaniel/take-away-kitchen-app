@@ -21,7 +21,12 @@ const takeAwayApi = {
             method: 'PATCH'
         })
         return await response.json()
-    }
+    },
+    getRestaurantName: async (restaurant_code) => {
+        const URL = `${baseUrl}/restaurants/${restaurant_code}`
+        const response = await fetch(URL)
+        return await response.json()
+    },
 }
 
 export default takeAwayApi
