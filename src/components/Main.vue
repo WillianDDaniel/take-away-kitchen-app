@@ -1,11 +1,18 @@
 <script>
   import takeAwayApi from '../services/takeAwayApi'
+  import OrderList from './OrderList.vue';
+  import OrderDetails from './OrderDetails.vue'
   export default {
     name: 'Main',
+    components: {
+      OrderDetails,
+      OrderList,
+    },
     data() {
       return {
         orders: [],
         restaurant_code: '',
+        selectedOrderCode: '',
       }
     },
     methods: {
@@ -24,19 +31,8 @@
           this.restaurant_code = code
         }
       },
-      translateStatus(status) {
-        switch (status) {
-          case 'pending':
-            return 'Pendente'
-          case 'preparing':
-            return 'Em preparo'
-          case 'ready':
-            return 'Pronto'
-          case 'delivered':
-            return 'Entregue'
-          case 'canceled':
-            return 'Cancelado'
-        }
+      showOrderDetails(orderCode) {
+        this.selectedOrderCode = orderCode
       }
     },
     created() {
@@ -54,29 +50,9 @@
     <button @click="saveRestaurantCode">Continuar</button>
   </main>
 
-  <main v-else class="order-list">
-    <div v-for="order in orders" class="order">
-
-      <div>
-        Pedido: {{ order.code }} - {{ order.customer_name }}
-      </div>
-
-      <div>
-        Status: {{ translateStatus(order.status) }}
-      </div>
-
-      <div>
-        Feito às {{
-          new Date(order.created_at).toLocaleTimeString('pt-BR', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false,
-          })
-        }}
-        -
-        {{ new Date(order.created_at).toLocaleDateString('pt-BR') }}
-      </div>
-    </div>
+  <main v-else class="main">
+    <OrderList :orders="orders" :showOrderDetails="showOrderDetails" />
+    <OrderDetails :order_code="selectedOrderCode" :restaurant_code="restaurant_code" />
   </main>
 </template>
 
@@ -99,4 +75,8 @@
     border-radius: 5px;
   }
 
+  .main {
+    display: flex;
+    gap: 10px;
+  }
 </style>
