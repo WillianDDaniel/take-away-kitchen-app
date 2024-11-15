@@ -11,7 +11,7 @@
     },
     props: {
       order_code: String,
-      restaurant_code: String
+      restaurantCode: String
     },
 
     data() {
@@ -22,7 +22,7 @@
 
     methods: {
       async getOrderDetails() {
-        this.order = await takeAwayApi.getOrderDetails(this.restaurant_code, this.order_code)
+        this.order = await takeAwayApi.getOrderDetails(this.restaurantCode, this.order_code)
       },
       translateStatus(status) {
         return translateOrderStatus(status)
