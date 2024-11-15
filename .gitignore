@@ -24,5 +24,3 @@ dist-ssr
 *.sw?
 
 src/components/OrderDetails.vue
-src/components/Header.vue
-src/components/Main.vue
