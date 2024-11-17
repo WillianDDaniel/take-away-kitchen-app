@@ -31,10 +31,16 @@
 
 <template>
 
-  <main class="main">
-    <OrderList :orders="orders" :showOrderDetails="showOrderDetails" />
+  <main class="main" v-if="orders.length > 0">
+    <OrderList :orders="orders" :showOrderDetails="showOrderDetails" :selectedOrder="selectedOrderCode" />
     <OrderDetails :order_code="selectedOrderCode" :restaurantCode="restaurantCode" />
   </main>
+
+  <div v-else class="no-orders">
+    Nenhum pedido encontrado!
+    <br>
+    Aguardando pedidos...
+  </div>
 
 </template>
 
@@ -54,5 +60,11 @@
   .main {
     display: flex;
     gap: 10px;
+  }
+
+  .no-orders {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
   }
 </style>
