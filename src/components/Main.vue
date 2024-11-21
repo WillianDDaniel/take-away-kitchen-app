@@ -7,7 +7,7 @@
 
     props: {
       orders: Array,
-      restaurantCode: String
+      restaurantCode: String,
     },
 
     components: {
@@ -32,7 +32,8 @@
 <template>
 
   <main class="main" v-if="orders.length > 0">
-    <OrderList :orders="orders" :showOrderDetails="showOrderDetails" :selectedOrder="selectedOrderCode" />
+    <OrderList :orders="orders" :showOrderDetails="showOrderDetails"
+      :selectedOrder="selectedOrderCode" :restaurantCode="restaurantCode"/>
     <OrderDetails :order_code="selectedOrderCode" :restaurantCode="restaurantCode" />
   </main>
 

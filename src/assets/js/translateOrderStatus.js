@@ -11,4 +11,14 @@ export default function translateOrderStatus(status) {
     case 'cancelled':
       return 'Cancelado'
   }
+
+  if (!status) {
+    return [
+      'pending',
+      'preparing',
+      'ready',
+      'delivered',
+      'cancelled'
+    ]
+  }
 }

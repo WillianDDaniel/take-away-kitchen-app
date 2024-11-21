@@ -1,6 +1,7 @@
 <script>
   import translateOrderStatus from '../assets/js/translateOrderStatus'
   import dateFormatter from '../assets/js/dateFormatter'
+  import takeAwayApi from '../services/takeAwayApi';
 
   export default {
     name: 'OrderList',
@@ -8,6 +9,14 @@
     props: {
       orders: Array,
       showOrderDetails: Function,
+      restaurantCode: String,
+    },
+
+    data() {
+      return {
+        filteredOrders: this.orders,
+        statusList: () => translateOrderStatus(),
+      }
     },
 
     methods: {
@@ -17,19 +26,34 @@
       dateFormatter(date) {
         return dateFormatter(date)
       },
+      async filterOrders(status) {
+        this.filteredOrders = await takeAwayApi.getOrdersByStatus(this.restaurantCode, status)
+      }
     },
 
     computed: {
       sortedOrders() {
-        return this.orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      }
-    }
+        return this.filteredOrders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      },
+    },
   }
 </script>
 
 <template>
   <section>
     <div class="order-list">
+
+      <div class="order-filters-container">
+        <label for="order-filters">Filtrar por status:</label>
+
+        <select class="order-filters" @change="filterOrders($event.target.value)">
+          <option value="all">Todos</option>
+
+          <option v-for="status in statusList()" id="order-filter" :value="status">
+            {{ translateStatus(status) }}
+          </option>
+        </select>
+      </div>
 
       <div
         v-for="order in sortedOrders" @click="showOrderDetails(order.code)"
@@ -45,6 +69,10 @@
         <div>
           Feito às {{ dateFormatter(order.created_at) }}
         </div>
+      </div>
+
+      <div v-if="sortedOrders.length === 0">
+        Nenhum pedido encontrado!
       </div>
 
     </div>
@@ -101,5 +129,18 @@
   .status {
     margin: 3px;
     font-weight: 500;
+  }
+
+  .order-filters-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-left: 10px;
+  }
+
+  .order-filters {
+    padding: 5px;
+    border-radius: 5px;
   }
 </style>
