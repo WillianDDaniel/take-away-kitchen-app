@@ -2,17 +2,22 @@
   export default {
     name: 'Button',
     props: {
-      status: String,
-      updateStatus: Function,
+      action: Function,
+      label: String,
+      className: String,
+      type: {
+        type: String,
+        default: 'button'
+      }
     }
   }
 </script>
 
 <template>
-  <button type="button" @click="updateStatus" class="button"
-    v-if="status === 'pending' || status === 'preparing'"
+  <button :type="type" @click="action"
+    :class="`button ${className}`"
   >
-    {{ status === 'pending' ? 'Aceitar Pedido' : 'Marcar como Pronto' }}
+    {{ label }}
   </button>
 </template>
 
@@ -22,7 +27,6 @@
     padding: 5px 10px;
     cursor: pointer;
     font-size: 1.1rem;
-    background-color: rgb(64, 138, 0);
     color: #fff;
     font-weight: 600;
     border: none;
@@ -32,7 +36,12 @@
     margin-right: 10px;
   }
 
-  .button:hover {
-    background-color: rgb(0, 128, 0);
+  .danger {
+    background-color: rgb(239, 46, 46);
   }
+
+  .success {
+    background-color: rgb(12, 161, 12);
+  }
+
 </style>

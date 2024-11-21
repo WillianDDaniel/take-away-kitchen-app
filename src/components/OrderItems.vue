@@ -1,9 +1,18 @@
 <script>
   export default {
     name: 'OrderItems',
+
     props: {
       order: Object,
       currencyFormatter: Function,
+    },
+
+    methods: {
+      currencyFormatter(price) {
+        return new Intl.NumberFormat('pt-BR', {
+          style: 'currency', currency: 'BRL',
+        }).format(price / 100)
+      },
     }
   }
 </script>
@@ -27,6 +36,10 @@
       {{ item.note }}
     </div>
   </div>
+
+  <div class="total-price">
+    {{ "Total: " + currencyFormatter(order?.total_price) }}
+  </div>
 </template>
 
 <style scoped>
@@ -41,6 +54,14 @@
     padding: 10px;
     font-size: 0.9rem;
     font-style: italic;
+    margin-left: 10px;
+  }
+
+  .total-price {
+    font-weight: bold;
+    width: 50vw;
+    display: flex;
+    justify-content: flex-end;
     margin-left: 10px;
   }
 </style>

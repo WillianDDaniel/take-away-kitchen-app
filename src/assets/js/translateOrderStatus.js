@@ -8,7 +8,7 @@ export default function translateOrderStatus(status) {
       return 'Pronto'
     case 'delivered':
       return 'Entregue'
-    case 'canceled':
+    case 'cancelled':
       return 'Cancelado'
   }
 }

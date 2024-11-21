@@ -1,6 +1,6 @@
 <script>
-  import translateOrderStatus from '../assets/js/translateOrderStatus'
   import dateFormatter from '../assets/js/dateFormatter'
+  import translateOrderStatus from '../assets/js/translateOrderStatus'
 
   export default {
     name: 'OrderHeader',

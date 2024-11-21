@@ -27,6 +27,22 @@ const takeAwayApi = {
         const response = await fetch(URL)
         return await response.json()
     },
+    cancelOrder: async (restaurant_code, order_code, reason) => {
+        const URL = `${baseUrl}/restaurants/${restaurant_code}/orders/${order_code}/cancel`
+        const response = await fetch(URL, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ cancel_reason: reason })
+        })
+
+        if (response.ok) {
+            return await response.json()
+        }
+        const data = await response.json()
+        alert(data.error + ': ' + data.message)
+    }
 }
 
 export default takeAwayApi

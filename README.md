@@ -60,4 +60,4 @@ Se trata de um código alfanumérico único que pode ser encontrado acessando o 
 
 Na tela inicial do projeto Vue.js vai aparecer um solicitação onde será adicionado o código do restaurante.
 
-Após adicionado o código do seu restaurante ficará salvo no localhost. Sendo necessário clicar em sair para que o mesmo seja desvinculado do sistema.
+Após adicionado o código do seu restaurante ficará salvo no localStorage. Sendo necessário clicar em sair para que o mesmo seja desvinculado do sistema.

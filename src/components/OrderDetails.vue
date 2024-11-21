@@ -2,8 +2,10 @@
   import OrderItems from './OrderItems.vue'
   import OrderHeader from './OrderHeader.vue'
   import Button from './Button.vue'
+  import Modal from './Modal.vue'
 
   import takeAwayApi from '../services/takeAwayApi'
+  import translateOrderStatus from '../assets/js/translateOrderStatus'
 
   export default {
     name: 'OrderDetails',
@@ -12,6 +14,7 @@
       OrderHeader,
       OrderItems,
       Button,
+      Modal,
     },
 
     props: {
@@ -21,7 +24,8 @@
 
     data() {
       return {
-        order: null
+        order: null,
+        isOpen: false,
       }
     },
 
@@ -31,16 +35,22 @@
       },
       updateStatus() {
         takeAwayApi.updateOrderStatus(this.restaurantCode, this.order_code)
+          .then(() => { this.getOrderDetails() })
+      },
+      cancelOrder(event) {
+        const reason = event.target.reason.value
+        takeAwayApi.cancelOrder(this.restaurantCode, this.order_code, reason)
           .then(() => {
-          this.getOrderDetails()
-        })
+            this.isOpen = false
+            this.getOrderDetails()
+          })
       },
-      currencyFormatter(price) {
-        return new Intl.NumberFormat('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }).format(price)
+      openModal() {
+        this.isOpen = true
       },
+      translateStatus(status) {
+        return translateOrderStatus(status)
+      }
     },
 
     watch: {
@@ -56,28 +66,42 @@
     <h2 class="title">Detalhes do pedido</h2>
 
     <OrderHeader :order="order" />
-    <OrderItems :order="order" :currencyFormatter="currencyFormatter" />
-
-    <div class="total-price">
-      {{
-        "Total: " + currencyFormatter(order?.items.reduce((acc, item) => {
-          return acc + item.price * item.quantity
-        }, 0))
-      }}
-    </div>
+    <OrderItems :order="order" />
 
     <div class="actions">
-      <Button :status="order?.status" :updateStatus="updateStatus"
-        v-if="order?.status === 'pending' || order?.status === 'preparing'"
+      <Button @click="openModal" label="Cancelar Pedido" className="danger"
+        v-if="order.status !== 'delivered' && order.status !== 'cancelled'"
       />
 
-      <span v-else>&check; Pedido Pronto</span>
+      <Button @click="updateStatus" className="success"
+        :label="order.status === 'pending' ? 'Aceitar Pedido' : 'Marcar como Pronto'"
+        v-if="order.status === 'pending' || order.status === 'preparing'"
+      />
+
+      <div v-else class="order-status">
+        Pedido {{ translateStatus(order.status) }}
+        {{ order.cancel_reason && " - Motivo: " + order.cancel_reason }}
+      </div>
     </div>
   </section>
 
   <section v-else>
     Clique em um pedido para ver os detalhes
   </section>
+
+  <Modal :show="isOpen" @close="isOpen = false" title="Cancelar Pedido">
+    <slot>
+
+      <form @submit.prevent="cancelOrder" class="cancel-order">
+        <p>Tem certeza que deseja cancelar o pedido?</p>
+
+        <input type="text" placeholder="Motivo do cancelamento" name="reason">
+        <Button type="submit" label="Cancelar Pedido" className="danger" />
+      </form>
+
+    </slot>
+  </Modal>
+
 </template>
 
 <style scoped>
@@ -97,14 +121,6 @@
     font-size: 1.2rem;
   }
 
-  .total-price {
-    font-weight: bold;
-    width: 50vw;
-    display: flex;
-    justify-content: flex-end;
-    margin-left: 10px;
-  }
-
   .actions {
     display: flex;
     justify-content: flex-end;
@@ -115,6 +131,30 @@
     padding: 10px 20px;
     border-radius: 5px;
     margin-bottom: 10px;
-    margin-right: 10px;
+    margin-right: 20px;
   }
+
+  .cancel-order {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cancel-order input {
+    padding: 10px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #7b7b7b;
+  }
+
+  .order-status {
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    margin-right: 20px;
+    border: 1px solid #7b7b7b;
+    border-radius: 3px;
+    font-weight: 500;
+  }
+
 </style>
